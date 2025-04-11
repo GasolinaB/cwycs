@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cwycs/main_navigation.dart'; // Основной импорт
+import 'package:cwycs/main_navigation.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -55,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'username': username,
             'createdAt': FieldValue.serverTimestamp(),
             'avatar': '',
+            'displayName': username,
           },
         );
 
@@ -69,7 +70,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           MaterialPageRoute(builder: (_) => const MainNavigation()),
         );
       }
-
     } on FirebaseAuthException catch (e) {
       setState(() => _error = e.message ?? 'Ошибка регистрации');
     } catch (e) {
@@ -102,15 +102,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(
-                  labelText: 'Имя пользователя',
-                  prefixIcon: Icon(Icons.person),
+                  labelText: 'Никнейм',
+                  prefixIcon: Icon(Icons.alternate_email),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите имя пользователя';
+                    return 'Введите никнейм';
                   }
                   if (value.length < 3) {
                     return 'Минимум 3 символа';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+                    return 'Только буквы, цифры и подчеркивание';
                   }
                   return null;
                 },
@@ -127,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Введите email';
                   }
-                  if (!value.contains('@')) {
+                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                     return 'Некорректный email';
                   }
                   return null;
