@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/forgot_password_screen.dart'; // Создайте этот файл позже
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +39,15 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.white),
+          headlineSmall: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepPurpleAccent,
+          ),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
@@ -63,9 +71,14 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: FirebaseAuth.instance.currentUser == null
-          ? const LoginScreen()
-          : const ProfileScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => FirebaseAuth.instance.currentUser == null
+            ? const LoginScreen()
+            : const ProfileScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+      },
     );
   }
 }
