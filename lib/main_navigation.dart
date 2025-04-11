@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'profile_screen.dart';
-import 'chat_list_screen.dart';
-import 'friends_screen.dart';
-import 'user_search_screen.dart';
-import 'login_screen.dart';
+import 'package:cwycs/screens/profile_screen.dart';
+import 'package:cwycs/screens/chat_list_screen.dart';
+import 'package:cwycs/screens/friends_screen.dart';
+import 'package:cwycs/screens/user_search_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -29,7 +27,10 @@ class _MainNavigationState extends State<MainNavigation> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         selectedItemColor: Colors.deepPurpleAccent,

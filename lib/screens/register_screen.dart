@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'profile_screen.dart';
+import 'package:cwycs/main_navigation.dart'; // Основной импорт
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -32,13 +32,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final password = _passwordController.text.trim();
       final username = _usernameController.text.trim();
 
-      // Создаем пользователя в Firebase Auth
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Сохраняем данные в Firestore с транзакцией
       await FirebaseFirestore.instance.runTransaction((transaction) async {
-        // Проверка уникальности username
         final usernameDoc = await transaction.get(
           FirebaseFirestore.instance.collection('usernames').doc(username),
         );
@@ -50,7 +47,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
 
-        // Сохраняем основной профиль
         transaction.set(
           FirebaseFirestore.instance.collection('users').doc(credential.user!.uid),
           {
@@ -62,14 +58,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           },
         );
 
-        // Сохраняем username для проверки уникальности
         transaction.set(
           FirebaseFirestore.instance.collection('usernames').doc(username),
           {'uid': credential.user!.uid},
         );
       });
 
-      // Перенаправляем на главный экран
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const MainNavigation()),
@@ -183,18 +177,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Замените на ваш экран HomeScreen
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Добро пожаловать!')),
     );
   }
 }
