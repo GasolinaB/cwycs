@@ -1,8 +1,7 @@
-name: Deploy to Firebase Hosting on merge
+name: Deploy to Firebase Hosting
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build_and_deploy:
@@ -10,24 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Установка Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      # Установка зависимостей Flutter
-      - name: Install dependencies
-        run: flutter pub get
+      - run: flutter pub get
+      - run: flutter build web
 
-      # Сборка веб-версии
-      - name: Build Web
-        run: flutter build web
-
-      # Деплой в Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CWYC_A859D }}
           projectId: cwyc-a859d
-          target: build/web  # Указываем папку сборки Flutter
+          target: build/web  # Важно!
