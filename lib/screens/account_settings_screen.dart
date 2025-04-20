@@ -46,7 +46,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   Future<void> _loadUserData() async {
     final doc = await _firestore.collection('users').doc(_currentUser?.uid).get();
     setState(() {
-      _nicknameController.text = doc['nickname'] ?? '';
+      _nicknameController.text = doc['usernames'] ?? '';
       _avatarUrl = doc['avatarUrl'];
     });
   }

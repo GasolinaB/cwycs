@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cwycs/screens/register_screen.dart';
-import 'package:cwycs/screens/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,6 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/profile');
+      }
     } on FirebaseAuthException catch (e) {
       setState(() => _errorMessage = _parseAuthError(e.code));
     } catch (e) {
@@ -75,7 +77,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Заголовок
             const Text(
               'Добро пожаловать',
               style: TextStyle(
@@ -86,28 +87,23 @@ class _LoginScreenState extends State<LoginScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-
-            // Поле email
             _buildEmailField(),
             const SizedBox(height: 24),
-
-            // Поле пароля
             _buildPasswordField(),
             const SizedBox(height: 16),
-
-            // Кнопка входа
+            if (_errorMessage != null)
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.redAccent),
+                textAlign: TextAlign.center,
+              ),
+            const SizedBox(height: 8),
             _buildLoginButton(),
             const SizedBox(height: 24),
-
-            // Кнопки дополнительных действий
             _buildActionButtons(),
             const SizedBox(height: 32),
-
-            // Разделитель
             _buildDivider(),
             const SizedBox(height: 32),
-
-            // Социальные кнопки (заглушки)
             _buildSocialButtons(),
           ],
         ),

@@ -36,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .createUserWithEmailAndPassword(email: email, password: password);
 
       await FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Проверка уникальности username
         final usernameDoc = await transaction.get(
           FirebaseFirestore.instance.collection('usernames').doc(username),
         );
@@ -47,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
 
+        // Сохраняем данные пользователя
         transaction.set(
           FirebaseFirestore.instance.collection('users').doc(credential.user!.uid),
           {
@@ -54,14 +56,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'email': email,
             'username': username,
             'createdAt': FieldValue.serverTimestamp(),
-            'avatar': '',
+            'avatarUrl': '',
             'displayName': username,
           },
         );
 
+        // Исправлено: добавляем ОБА поля в коллекцию usernames
         transaction.set(
           FirebaseFirestore.instance.collection('usernames').doc(username),
-          {'uid': credential.user!.uid},
+          {
+            'uid': credential.user!.uid,
+            'username': username, // Это поле было добавлено
+          },
         );
       });
 
